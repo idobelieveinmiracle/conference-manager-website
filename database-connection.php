@@ -218,9 +218,16 @@
 		if (! $result ){
 			trigger_error("Invalid query: ".$GLOBALS["conn"]->error);
 		} else {
+			
 			if ($result->num_rows > 0) {
-				$seatss = mysqli_fetch_all($result, MYSQLI_ASSOC);
-				return json_encode($seatss);
+				$arr = array();
+				while ($row = $result->fetch_assoc()){
+					$arr['seat_id'] = $row['seat_id'];
+					$arr['col'] = $row['col'];
+					$arr['viewer_id'] = $row['viewer_id'];
+					if ($row['viewer_id'] != NULL) $arr['viewer_name'] = get_participant_info_by_id($row['viewer_id']);
+				}
+				return json_encode($arr);
 			} else return "Result 0";
 		}
 	}
